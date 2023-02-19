@@ -6,7 +6,7 @@ let description = "Generate Asset Resources"
 let permissionReason = "The plugin writes the generaterated assets swift file"
 
 let package = Package(
-  name: "Swift-Plugin-Resources",
+  name: "SwiftPluginResources",
   products: [
     .plugin(
       name: "AssetResources",
@@ -19,7 +19,7 @@ let package = Package(
       name: pluginName,
       capability: .command(
         intent: .custom(
-          verb: "Generate-Asset-Resources",
+          verb: "generate-asset-resources",
           description: description
         ),
         permissions: [
