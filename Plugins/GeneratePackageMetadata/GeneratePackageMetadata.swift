@@ -5,7 +5,7 @@ import PackagePlugin
 struct GeneratePackageMetadata: CommandPlugin {
     func performCommand(context: PackagePlugin.PluginContext, arguments: [String]) async throws {
         // Package Header
-        var gneratedCode = getPackageBaseInformations(package: context.package)
+        var gneratedCode = try getPackageBaseInformations(package: context.package)
         // Code Top Contributors
         gneratedCode.append(try getPackageContributors(folderPath: context.package.directory.string))
         try writeToFile(
@@ -19,9 +19,10 @@ extension GeneratePackageMetadata {
     /// Returns the package base header informations
     /// - Parameter package: PackagePlugin
     /// - Returns: Base informations
-    func getPackageBaseInformations(package: PackagePlugin.Package) -> String {
+    func getPackageBaseInformations(package: PackagePlugin.Package) throws -> String {
         """
         # Package: \(package.displayName) 📦
+        -  Last changed date: *\(try getLastUpdateDate(folderPath: package.directory.string))*
         -  ToolsVersion: *\(package.toolsVersion)*
         -  Origin: *\(package.origin)*
         -  Directory: *\(package.directory.stem)*
@@ -30,6 +31,11 @@ extension GeneratePackageMetadata {
         -  Targets Count: *\(package.targets.count)*
         \n
         """
+    }
+    
+    /// Returns the packag last changed date
+    func getLastUpdateDate(folderPath: String) throws -> String {
+        try runGitCommand(arguments: ["log", "-1", "--format=%cd", "--", folderPath]) ?? ""
     }
     
     /// Runs a Git Command
@@ -59,7 +65,7 @@ extension GeneratePackageMetadata {
         """
          ## Top contributors:
          
-         """
+        """
     }
 }
 
