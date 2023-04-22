@@ -6,8 +6,8 @@ struct GeneratePackageMetadata: CommandPlugin {
     func performCommand(context: PackagePlugin.PluginContext, arguments: [String]) async throws {
         // Package Header
         var gneratedCode = getPackageBaseInformations(package: context.package)
-        
-        
+        // Code Top Contributors
+        gneratedCode.append(try getPackageContributors(folderPath: context.package.directory.string))
         try writeToFile(
             contents: gneratedCode
         )
@@ -54,6 +54,15 @@ extension GeneratePackageMetadata {
     }
 }
 
+extension GeneratePackageMetadata {
+    func getPackageContributors(folderPath: String, limit: Int = 7) throws -> String {
+        """
+         ## Top contributors:
+         
+         """
+    }
+}
+
 extension GeneratePackageMetadata{
     /// writes string contents to README.md using .utf8 encoding
     /// - Parameters:
@@ -66,18 +75,5 @@ extension GeneratePackageMetadata{
             atomically: true,
             encoding: .utf8
         )
-    }
-    
-    /// Function to run shell commands and return the output
-    func shell(_ command: String) -> String {
-        let task = Process()
-        let pipe = Pipe()
-        task.standardOutput = pipe
-        task.arguments = ["-c", command]
-        task.launchPath = "/bin/bash"
-        task.launch()
-        task.waitUntilExit()
-        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-        return String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
     }
 }
