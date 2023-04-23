@@ -8,6 +8,11 @@ struct GeneratePackageMetadata: CommandPlugin {
         var gneratedCode = try getPackageBaseInformations(package: context.package)
         // Code Top Contributors
         gneratedCode.append(try getPackageContributors(folderPath: context.package.directory.string))
+        //Dependencies Diagram
+        gneratedCode.append(getDependenciesDiagram(dependencies: context.package.dependencies))
+        // Products Class Diagram
+        gneratedCode.append(generateProductsClassDiagram(packageTargets: context.package.targets))
+
         try writeToFile(
             contents: gneratedCode
         )
@@ -35,7 +40,7 @@ extension GeneratePackageMetadata {
     
     /// Returns the packag last changed date
     func getLastUpdateDate(folderPath: String) throws -> String {
-        try runGitCommand(arguments: ["log", "-1", "--format=%cd", "--", folderPath]) ?? ""
+        try runGitCommand(arguments: ["log", "-1", "--format=%cd", "--", folderPath])?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
     }
     
     /// Runs a Git Command
@@ -65,7 +70,33 @@ extension GeneratePackageMetadata {
         """
          ## Top contributors:
          
+        \n
         """
+    }
+}
+
+extension GeneratePackageMetadata {
+    // Generate Mermaid target dependencies diagram syntax
+    func generateProductsClassDiagram(packageTargets: [Target]) -> String {
+        var mermaidSyntax = ""
+        for target in packageTargets {
+            mermaidSyntax.append("\n## \(target.name):\n\n```mermaid\nclassDiagram\ndirection RL\n")
+            target.recursiveTargetDependencies.forEach({
+                mermaidSyntax.append("\(target.name) ..> \($0.name)\n")
+            })
+            mermaidSyntax.append("```")
+        }
+        return mermaidSyntax
+    }
+    
+    // Generate Mermaid package dependencies diagram syntax
+    func getDependenciesDiagram(dependencies: [PackagePlugin.PackageDependency]) ->String{
+        var mermaidSyntax = "## Pckage Dependencies:\n\n```mermaid\nclassDiagram\ndirection RL\n"
+        for dependency in dependencies {
+            mermaidSyntax.append("class \(dependency.package.displayName)\n")
+        }
+        mermaidSyntax.append("```")
+        return mermaidSyntax
     }
 }
 
