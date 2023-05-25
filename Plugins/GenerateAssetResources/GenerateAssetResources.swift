@@ -4,7 +4,7 @@ import PackagePlugin
 @main
 struct GenerateAssetResources: CommandPlugin {
     func performCommand(context: PackagePlugin.PluginContext, arguments: [String]) async throws {
-        let fileName = "ImageAssets.swift"
+        let fileName = "ImageAssetsRessources.swift"
         try context.package.targets.forEach { target in
             guard let sourcetarget = target as? SourceModuleTarget else {
                 return
@@ -37,11 +37,20 @@ extension GenerateAssetResources{
     ///   - file: The file name
     ///   - target: The Source Module Target
     private func writeToFile(contents: String, file: String, target: SourceModuleTarget) throws{
-        try contents.write(
-            toFile: target.directory.string.appending("/Ressources").appending(file),
-            atomically: true,
-            encoding: .utf8
-        )
+        let folderPath = target.directory.string.appending("/Utils")
+        do {
+            try FileManager.default.createDirectory(atPath: folderPath, withIntermediateDirectories: true, attributes: nil)
+            let filePath = folderPath.appending("/\(file)")
+            
+            do {
+                try contents.write(toFile: filePath, atomically: true, encoding: .utf8)
+                print("File created and written successfully.")
+            } catch {
+                print("Error writing file: \(error)")
+            }
+        } catch {
+            print("Error creating folder: \(error)")
+        }
     }
 }
 
@@ -61,7 +70,8 @@ extension GenerateAssetResources{
             let asset = try JSONDecoder().decode(Contents.self, from: jsonData)
             if !asset.images.compactMap(\.filename).isEmpty {
                 let baseName = contentJsonUrl.deletingLastPathComponent().deletingPathExtension().lastPathComponent
-                result.append("let \(baseName) = Image(\"\(baseName)\", bundle: .module)\n")
+                let camelCaseBaseName = baseName.split(separator: "-").reduce("") { $0 + $1.capitalized }
+                result.append("let \(camelCaseBaseName.prefix(1).lowercased() + camelCaseBaseName.dropFirst()) = Image(\"\(baseName)\", bundle: .module)\n")
             }
         })
         return result
