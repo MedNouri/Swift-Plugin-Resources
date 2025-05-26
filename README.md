@@ -32,10 +32,10 @@ For the related target, Add
 A swift package plugin that automatically generates package Metadata as:
 - Package Base Informations
 - Package Contributors
-- Base pakcage file Statistics
+- Base package file Statistics
 - Dependencies Table 
 - Products ClassDiagram (mermaid)
-- DependeciesUsageGraph (mermaid)
+- DependenciesUsageGraph (mermaid)
 
 # How to use 
 

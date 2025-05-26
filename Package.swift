@@ -3,10 +3,10 @@ import PackageDescription
 
 let pluginName = "GenerateAssetResources"
 let description = "Generate Asset Resources"
-let permissionReason = "The plugin writes the generaterated assets swift file"
+let permissionReason = "The plugin writes the generated assets swift file"
 let packageMetadataPluginName = "GeneratePackageMetadata"
 let packageMetadataPluginDescription = "Generate Package Metadata"
-let packageMetadataPluginPermissionReason = "The plugin writes the generaterated README.md file"
+let packageMetadataPluginPermissionReason = "The plugin writes the generated README.md file"
 
 let package = Package(
   name: "SwiftPluginResources",

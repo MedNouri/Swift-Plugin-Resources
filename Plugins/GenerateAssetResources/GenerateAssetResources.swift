@@ -9,18 +9,18 @@ struct GenerateAssetResources: CommandPlugin {
             guard let sourcetarget = target as? SourceModuleTarget else {
                 return
             }
-            var gneratedCode:String? = ""
+            var generatedCode:String? = ""
             try sourcetarget.sourceFiles(withSuffix: "xcassets").forEach { file in
-                gneratedCode?.append(try findAssets(within: file.path.string))
+                generatedCode?.append(try findAssets(within: file.path.string))
             }
             
-            guard let gneratedAssetsCode = gneratedCode else {
+            guard let generatedAssetsCode = generatedCode else {
                 print("No element found at \(target.name)")
                 return
             }
             
             try writeToFile(
-                contents: baseGneratedCode + gneratedAssetsCode,
+                contents: baseGeneratedCode + generatedAssetsCode,
                 file: fileName,
                 target: sourcetarget
             )
@@ -55,7 +55,7 @@ extension GenerateAssetResources{
 }
 
 extension GenerateAssetResources{
-    /// find image contents within a givin director
+    /// find image contents within a givin directory
     /// - Parameter input: directory path
     /// - Returns: Generated swiftUI Image variable declarationS
     private func findAssets(within path: String) throws -> String  {
