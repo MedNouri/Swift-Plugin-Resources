@@ -5,20 +5,20 @@ import PackagePlugin
 struct GeneratePackageMetadata: CommandPlugin {
     func performCommand(context: PackagePlugin.PluginContext, arguments: [String]) async throws {
         // Package Header
-        var gneratedCode = try getPackageBaseInformations(package: context.package)
+        var generatedCode = try getPackageBaseInformations(package: context.package)
         // Code Top Contributors
-        gneratedCode.append(try getPackageContributors(directoryPath: context.package.directory))
-        //Pakcage Files Statistics
-        gneratedCode.append(getPakcageStatistics(context: context))
-        //Dependencies Table
-        gneratedCode.append(getDependenciesTable(dependencies: context.package.dependencies))
+        generatedCode.append(try getPackageContributors(directoryPath: context.package.directory))
+        // Package Files Statistics
+        generatedCode.append(getPackageStatistics(context: context))
+        // Dependencies Table
+        generatedCode.append(getDependenciesTable(dependencies: context.package.dependencies))
         // Products Class Diagram
-        gneratedCode.append(generateProductsClassDiagram(packageTargets: context.package.targets))
-        //Dependecies Usage Graph
-        gneratedCode.append(getDependeciesUsageGraph(context: context, dependencies: context.package.dependencies))
+        generatedCode.append(generateProductsClassDiagram(packageTargets: context.package.targets))
+        // Dependencies Usage Graph
+        generatedCode.append(getDependenciesUsageGraph(context: context, dependencies: context.package.dependencies))
         
         try writeToFile(
-            contents: gneratedCode
+            contents: generatedCode
         )
     }
     
@@ -151,8 +151,8 @@ extension GeneratePackageMetadata {
     
 }
 extension GeneratePackageMetadata {
-    func getDependeciesUsageGraph(context: PackagePlugin.PluginContext,dependencies: [PackagePlugin.PackageDependency]) -> String{
-        var mermaidSyntax = "\n ## Dependecies Usage \n\n"
+    func getDependenciesUsageGraph(context: PackagePlugin.PluginContext,dependencies: [PackagePlugin.PackageDependency]) -> String{
+        var mermaidSyntax = "\n ## Dependencies Usage \n\n"
         context.package.targets.forEach { target in
             guard let sourcetarget = target as? SourceModuleTarget , sourcetarget.kind == .generic else {
                 return
@@ -175,7 +175,7 @@ extension GeneratePackageMetadata {
         return mermaidSyntax
     }
     
-    func getPakcageStatistics(context: PackagePlugin.PluginContext) -> String{
+    func getPackageStatistics(context: PackagePlugin.PluginContext) -> String{
         var mermaidSyntax = "\n## Package Structure\n"
         var numberOfSourceFiles = 0
         var numberOfTestFiles = 0
