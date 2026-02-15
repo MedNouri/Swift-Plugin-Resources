@@ -30,7 +30,7 @@ For the related target, Add
 
 # Generate Package Metadata
 A swift package plugin that automatically generates package Metadata as:
-- Package Base Informations
+- Package Base Information
 - Package Contributors
 - Base package file Statistics
 - Dependencies Table 
