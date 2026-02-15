@@ -4,7 +4,7 @@ import PackagePlugin
 @main
 struct GenerateAssetResources: CommandPlugin {
     func performCommand(context: PackagePlugin.PluginContext, arguments: [String]) async throws {
-        let fileName = "ImageAssetsRessources.swift"
+        let fileName = "ImageAssetsResources.swift"
         try context.package.targets.forEach { target in
             guard let sourcetarget = target as? SourceModuleTarget else {
                 return
@@ -55,7 +55,7 @@ extension GenerateAssetResources{
 }
 
 extension GenerateAssetResources{
-    /// find image contents within a givin directory
+    /// find image contents within a given directory
     /// - Parameter input: directory path
     /// - Returns: Generated swiftUI Image variable declarationS
     private func findAssets(within path: String) throws -> String  {

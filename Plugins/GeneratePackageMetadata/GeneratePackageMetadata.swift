@@ -25,9 +25,9 @@ struct GeneratePackageMetadata: CommandPlugin {
 }
 
 extension GeneratePackageMetadata {
-    /// Returns the package base header informations
+    /// Returns the package base header information
     /// - Parameter package: PackagePlugin
-    /// - Returns: Base informations
+    /// - Returns: Base information
     func getPackageBaseInformations(package: PackagePlugin.Package) throws -> String {
         """
         # Package: \(package.displayName) 📦
